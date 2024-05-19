@@ -18,6 +18,7 @@ services:
     image: wordpress:latest
     volumes:
       - ./wordpress:/var/www/html
+      - ./dist:/var/www/html/wp-content/plugins/amazonpacker
     ports:
       - "8000:80"
     restart: always

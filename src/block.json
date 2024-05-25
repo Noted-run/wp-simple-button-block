@@ -3,9 +3,9 @@
 	"apiVersion": 3,
 	"name": "create-block/static",
 	"version": "0.1.0",
-	"title": "Amazonpacker",
+	"title": "SimpleButtonBlock",
 	"category": "widgets",
-	"icon": "smiley",
+	"icon": "dashicons-button",
 	"description": "Example block scaffolded with Create Block tool.",
 	"example": {},
 	"supports": {

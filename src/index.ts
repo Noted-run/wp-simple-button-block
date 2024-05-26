@@ -3,6 +3,7 @@ import { registerBlockType } from "@wordpress/blocks";
 import edit from "./edit";
 import save from "./save";
 import metadata from "./block.json";
+import { ImgType } from "./type";
 
 registerBlockType(metadata.name, {
 	title: metadata.title,
@@ -20,17 +21,13 @@ registerBlockType(metadata.name, {
 			type: "string",
 			default: null,
 		},
-		mediaId: {
-			type: "number",
-			default: null,
-		},
 		imgUrl: {
 			type: "string",
 			default: null,
 		},
-		imgAlt: {
+		imgType: {
 			type: "string",
-			default: null,
+			default: ImgType.SELECT,
 		},
 	},
 	edit,

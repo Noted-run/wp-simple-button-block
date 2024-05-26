@@ -1,10 +1,12 @@
 import { __ } from "@wordpress/i18n";
+import { useState, useEffect } from "@wordpress/element";
 import {
 	MediaUpload,
 	MediaUploadCheck,
 	useBlockProps,
 } from "@wordpress/block-editor";
 import { Button } from "@wordpress/components";
+import { ImgType } from "./type";
 
 export default function edit({ attributes, setAttributes }) {
 	/**
@@ -47,12 +49,39 @@ export default function edit({ attributes, setAttributes }) {
 	const selectImage = (media: { id: number; url: string; title: string }) => {
 		setAttributes({
 			...attributes,
-			mediaId: media.id,
 			imgUrl: media.url,
-			imgAlt: media.title,
 		});
 	};
+	const [inputUrl, setInputUrl] = useState("");
+	/**
+	 * URL入力
+	 * @param e
+	 */
+	const inputImageUrl = (e: React.ChangeEvent<HTMLInputElement>) => {
+		const url = e.target.value;
+		setInputUrl(url);
+		setAttributes({
+			...attributes,
+			imgUrl: url,
+		});
+	};
+	/**
+	 *
+	 */
+	const changeImgType = (imgType: ImgType, url?: string) => {
+		const result = {
+			...attributes,
+			imgType: imgType,
+		};
+		result.imgUrl = url ?? "";
+		setAttributes(result);
+	};
 
+	useEffect(() => {
+		if (attributes.imgType == ImgType.URL) setInputUrl(attributes.imgUrl);
+	});
+
+	const blockProps = useBlockProps();
 	return (
 		<div
 			{...useBlockProps()}
@@ -138,28 +167,65 @@ export default function edit({ attributes, setAttributes }) {
 								gap: "1em",
 							}}
 						>
-							<MediaUploadCheck>
-								<MediaUpload
-									onSelect={selectImage}
-									allowedTypes={["image"]}
-									value={attributes.mediaID ?? -1}
-									render={({ open }) => (
-										<Button
-											onClick={open}
-											style={{ fontSize: "1em", padding: 0 }}
-										>
-											ここをクリックで選択
-										</Button>
-									)}
-								/>
-							</MediaUploadCheck>
-							もしくは
-							<input
-								placeholder="URLを入力"
-								style={{
-									border: "none",
-									background: "none",
-									fontSize: "1em",
+							<ul style={{ margin: 0, padding: 0, listStyle: "none" }}>
+								<li>
+									<input
+										type="radio"
+										name={`img-type-select-${blockProps.id}`}
+										onChange={() => {
+											changeImgType(ImgType.SELECT);
+										}}
+										defaultChecked={attributes.imgType == ImgType.SELECT}
+									/>
+									<MediaUploadCheck>
+										<MediaUpload
+											onSelect={selectImage}
+											allowedTypes={["image", "text/plain"]}
+											render={({ open }) => (
+												<Button
+													onClick={open}
+													style={{ fontSize: "1em", padding: 0 }}
+													disabled={attributes.imgType != ImgType.SELECT}
+												>
+													ここをクリックで選択
+												</Button>
+											)}
+										/>
+									</MediaUploadCheck>
+								</li>
+								<li>
+									<input
+										type="radio"
+										name={`img-type-select-${blockProps.id}`}
+										onChange={() => {
+											changeImgType(ImgType.URL, inputUrl);
+										}}
+										defaultChecked={attributes.imgType == ImgType.URL}
+									/>
+									<input
+										placeholder="URLを入力"
+										style={{
+											border: "none",
+											background: "none",
+											fontSize: "1em",
+										}}
+										onChange={inputImageUrl}
+										value={inputUrl}
+										disabled={attributes.imgType != ImgType.URL}
+									/>
+								</li>
+							</ul>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<img
+								style={{ maxHeight: "120px" }}
+								src={attributes.imgUrl}
+								alt=""
+								onError={(e) => {
+									(e.target as HTMLImageElement).alt = "画像が存在しません";
+									(e.target as HTMLImageElement).onerror = null;
 								}}
 							/>
 						</td>

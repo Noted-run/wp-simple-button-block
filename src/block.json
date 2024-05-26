@@ -6,7 +6,7 @@
 	"title": "SimpleButtonBlock",
 	"category": "widgets",
 	"icon": "dashicons-button",
-	"description": "Example block scaffolded with Create Block tool.",
+	"description": "Often when external links are listed, there is no OG image to link to; Simple Button Block provides a simple button block where you simply enter an image, title, and link.",
 	"example": {},
 	"supports": {
 		"html": false

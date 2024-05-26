@@ -4,14 +4,15 @@ import {
 	MediaUploadCheck,
 	useBlockProps,
 } from "@wordpress/block-editor";
-import { Button, TextControl } from "@wordpress/components";
+import { Button } from "@wordpress/components";
 
 export default function edit({ attributes, setAttributes }) {
 	/**
 	 * タイトルテキスト
 	 * @param text タイトルテキスト
 	 */
-	const changeTitleText = (text: string) => {
+	const changeTitleText = (e: React.ChangeEvent<HTMLInputElement>) => {
+		const text = e.target.value;
 		setAttributes({
 			...attributes,
 			title: text,
@@ -21,7 +22,8 @@ export default function edit({ attributes, setAttributes }) {
 	 * リンク変更
 	 * @param url リンクURL
 	 */
-	const changeLinkUrlText = (url: string) => {
+	const changeLinkUrlText = (e: React.ChangeEvent<HTMLInputElement>) => {
+		const url = e.target.value;
 		setAttributes({
 			...attributes,
 			linkUrl: url,
@@ -43,66 +45,76 @@ export default function edit({ attributes, setAttributes }) {
 	return (
 		<div
 			{...useBlockProps()}
-			style={{
-				display: "flex",
-				width: "100%",
-				justifyContent: "center",
-				flexFlow: "wrap",
-				padding: "1rem",
-				boxShadow: "1px 1px 4px 0px #444",
-			}}
+			style={{ padding: "25px", backgroundColor: "#F3F3F3" }}
 		>
-			<div
+			<p
 				style={{
-					display: "flex",
-					width: "100%",
-					gap: 12,
-					flexFlow: "row wrap",
-					justifyContent: "center",
+					fontSize: "1.5em",
+					fontWeight: 600,
+					lineHeight: "1.5em",
+					margin: "0 0 20px 0",
 				}}
 			>
-				<div
+				Simple Button Block
+			</p>
+			<table style={{ width: "100%" }}>
+				<tbody
 					style={{
 						display: "flex",
-						justifyContent: "center",
-						alignItems: "center",
-						width: "100%",
-						minWidth: "120px",
-						maxWidth: "240px",
-						overflow: "hidden",
+						flexFlow: "column",
+						gap: "20px",
+						border: "none",
 					}}
 				>
-					<img
-						src={attributes.imgUrl}
-						alt={attributes.imgAlt}
-						style={{ width: "100%" }}
-					/>
-				</div>
-				<div style={{ flex: "1 1 auto" }}>
-					<TextControl
-						label="title"
-						value={attributes.title ?? ""}
-						onChange={changeTitleText}
-					/>
-					<TextControl
-						label="ad link"
-						value={attributes.linkUrl ?? ""}
-						onChange={changeLinkUrlText}
-					/>
-				</div>
-			</div>
-			<p style={{ width: "100%" }}>
-				<MediaUploadCheck>
-					<MediaUpload
-						onSelect={selectImage}
-						allowedTypes={["image"]}
-						value={attributes.mediaID ?? -1}
-						render={({ open }) => (
-							<Button onClick={open}>メディアライブラリを開く</Button>
-						)}
-					/>
-				</MediaUploadCheck>
-			</p>
+					<tr style={{ display: "flex", gap: 20 }}>
+						<th style={{ fontWeight: 400 }}>Title:</th>
+						<td style={{ width: "100%" }}>
+							<input
+								value={attributes.title ?? ""}
+								style={{
+									border: "none",
+									background: "none",
+									width: "100%",
+									fontSize: "1em",
+								}}
+								onChange={changeTitleText}
+								placeholder="ここに入力"
+							/>
+						</td>
+					</tr>
+					<tr style={{ display: "flex", gap: 20 }}>
+						<th style={{ fontWeight: 400 }}>URL:</th>
+						<td style={{ width: "100%" }}>
+							<input
+								style={{
+									border: "none",
+									background: "none",
+									width: "100%",
+									fontSize: "1em",
+								}}
+								value={attributes.linkUrl ?? ""}
+								onChange={changeLinkUrlText}
+								placeholder="ここに入力"
+							/>
+						</td>
+					</tr>
+					<tr style={{ display: "flex", gap: 20 }}>
+						<th style={{ fontWeight: 400 }}>Image:</th>
+						<td style={{ width: "100%" }}>
+							<MediaUploadCheck>
+								<MediaUpload
+									onSelect={selectImage}
+									allowedTypes={["image"]}
+									value={attributes.mediaID ?? -1}
+									render={({ open }) => (
+										<Button onClick={open}>ここをクリックで選択</Button>
+									)}
+								/>
+							</MediaUploadCheck>
+						</td>
+					</tr>
+				</tbody>
+			</table>
 		</div>
 	);
 }

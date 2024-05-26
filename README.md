@@ -6,7 +6,8 @@ WordPress Hand-made Plugin.
 
 ---
 
-![](https://avatars.githubusercontent.com/u/84720167?s=200&v=4)
+<img src="https://avatars.githubusercontent.com/u/84720167?s=200&v=4" width="64"><br />
+
 Powered by Noted.
 
 </div>

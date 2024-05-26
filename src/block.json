@@ -12,6 +12,7 @@
 		"html": false
 	},
 	"textdomain": "static",
+	"style": ["file:./index.css"],
 	"editorScript": "file:./index.js",
 	"viewScript": "file:./view.js"
 }

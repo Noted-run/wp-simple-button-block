@@ -9,7 +9,7 @@ import { Button } from "@wordpress/components";
 export default function edit({ attributes, setAttributes }) {
 	/**
 	 * タイトルテキスト
-	 * @param text タイトルテキスト
+	 *  @param e イベント
 	 */
 	const changeTitleText = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const text = e.target.value;
@@ -19,8 +19,19 @@ export default function edit({ attributes, setAttributes }) {
 		});
 	};
 	/**
-	 * リンク変更
-	 * @param url リンクURL
+	 * リンクテキスト変更
+	 *  @param e イベント
+	 */
+	const changeLinkText = (e: React.ChangeEvent<HTMLInputElement>) => {
+		const text = e.target.value;
+		setAttributes({
+			...attributes,
+			linkText: text,
+		});
+	};
+	/**
+	 * リンクURL変更
+	 * @param e イベント
 	 */
 	const changeLinkUrlText = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const url = e.target.value;
@@ -83,6 +94,22 @@ export default function edit({ attributes, setAttributes }) {
 						</td>
 					</tr>
 					<tr style={{ display: "flex", gap: 20 }}>
+						<th style={{ fontWeight: 400 }}>Link Text:</th>
+						<td style={{ flex: "1 1 auto" }}>
+							<input
+								value={attributes.linkText ?? ""}
+								style={{
+									border: "none",
+									background: "none",
+									width: "100%",
+									fontSize: "1em",
+								}}
+								onChange={changeLinkText}
+								placeholder="ここに入力"
+							/>
+						</td>
+					</tr>
+					<tr style={{ display: "flex", gap: 20 }}>
 						<th style={{ fontWeight: 400 }}>URL:</th>
 						<td style={{ width: "100%" }}>
 							<input
@@ -100,17 +127,41 @@ export default function edit({ attributes, setAttributes }) {
 					</tr>
 					<tr style={{ display: "flex", gap: 20 }}>
 						<th style={{ fontWeight: 400 }}>Image:</th>
-						<td style={{ width: "100%" }}>
+						<td
+							style={{
+								display: "flex",
+								width: "100%",
+								border: "none",
+								background: "none",
+								fontSize: "1em",
+								alignItems: "center",
+								gap: "1em",
+							}}
+						>
 							<MediaUploadCheck>
 								<MediaUpload
 									onSelect={selectImage}
 									allowedTypes={["image"]}
 									value={attributes.mediaID ?? -1}
 									render={({ open }) => (
-										<Button onClick={open}>ここをクリックで選択</Button>
+										<Button
+											onClick={open}
+											style={{ fontSize: "1em", padding: 0 }}
+										>
+											ここをクリックで選択
+										</Button>
 									)}
 								/>
 							</MediaUploadCheck>
+							もしくは
+							<input
+								placeholder="URLを入力"
+								style={{
+									border: "none",
+									background: "none",
+									fontSize: "1em",
+								}}
+							/>
 						</td>
 					</tr>
 				</tbody>

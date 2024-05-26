@@ -12,6 +12,10 @@ registerBlockType(metadata.name, {
 			type: "string",
 			default: null,
 		},
+		linkText: {
+			type: "string",
+			default: null,
+		},
 		linkUrl: {
 			type: "string",
 			default: null,

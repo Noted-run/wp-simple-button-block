@@ -5,7 +5,7 @@
 	"version": "0.1.0",
 	"title": "Simple Button Block",
 	"category": "widgets",
-	"icon": "button",
+	"icon": "",
 	"description": "Often when external links are listed, there is no OG image to link to; Simple Button Block provides a simple button block where you simply enter an image, title, and link.",
 	"example": {},
 	"supports": {

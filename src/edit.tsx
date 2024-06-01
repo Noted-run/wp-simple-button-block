@@ -1,17 +1,51 @@
 import { __ } from "@wordpress/i18n";
-import { useState, useEffect } from "@wordpress/element";
 import {
 	MediaUpload,
 	MediaUploadCheck,
 	useBlockProps,
 } from "@wordpress/block-editor";
 import { Button } from "@wordpress/components";
-import { ImgType } from "./type";
 
 export default function edit({ attributes, setAttributes }) {
 	/**
-	 * タイトルテキスト
-	 *  @param e イベント
+	 * 画像URL入力
+	 * @param e
+	 */
+	const inputImageUrl = (e: React.ChangeEvent<HTMLInputElement>) => {
+		const url = e.target.value;
+		setAttributes({
+			...attributes,
+			inputedImageUrl: url,
+			imgUrl: url,
+		});
+	};
+
+	/**
+	 * 画像選択
+	 * @param media
+	 */
+	const selectImage = (media: { id: number; url: string; title: string }) => {
+		setAttributes({
+			...attributes,
+			selectedImageUrl: media.url,
+			imgUrl: media.url,
+		});
+	};
+
+	/**
+	 * 画像リセット
+	 */
+	const resetSelectedImage = () => {
+		setAttributes({
+			...attributes,
+			selectedImageUrl: "",
+			imgUrl: "",
+		});
+	};
+
+	/**
+	 * タイトルテキスト変更
+	 * @param e イベント
 	 */
 	const changeTitleText = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const text = e.target.value;
@@ -42,46 +76,7 @@ export default function edit({ attributes, setAttributes }) {
 			linkUrl: url,
 		});
 	};
-	/**
-	 * 画像選択
-	 * @param media
-	 */
-	const selectImage = (media: { id: number; url: string; title: string }) => {
-		setAttributes({
-			...attributes,
-			imgUrl: media.url,
-		});
-	};
-	const [inputUrl, setInputUrl] = useState("");
-	/**
-	 * URL入力
-	 * @param e
-	 */
-	const inputImageUrl = (e: React.ChangeEvent<HTMLInputElement>) => {
-		const url = e.target.value;
-		setInputUrl(url);
-		setAttributes({
-			...attributes,
-			imgUrl: url,
-		});
-	};
-	/**
-	 *
-	 */
-	const changeImgType = (imgType: ImgType, url?: string) => {
-		const result = {
-			...attributes,
-			imgType: imgType,
-		};
-		result.imgUrl = url ?? "";
-		setAttributes(result);
-	};
 
-	useEffect(() => {
-		if (attributes.imgType == ImgType.URL) setInputUrl(attributes.imgUrl);
-	});
-
-	const blockProps = useBlockProps();
 	return (
 		<div
 			{...useBlockProps()}
@@ -92,7 +87,7 @@ export default function edit({ attributes, setAttributes }) {
 					fontSize: "1.5em",
 					fontWeight: 600,
 					lineHeight: "1.5em",
-					margin: "0 0 20px 0",
+					margin: "0 0 50px 0",
 				}}
 			>
 				Simple Button Block
@@ -107,55 +102,16 @@ export default function edit({ attributes, setAttributes }) {
 					}}
 				>
 					<tr style={{ display: "flex", gap: 20 }}>
-						<th style={{ fontWeight: 400 }}>Title:</th>
-						<td style={{ width: "100%" }}>
-							<input
-								value={attributes.title ?? ""}
-								style={{
-									border: "none",
-									background: "none",
-									width: "100%",
-									fontSize: "1em",
-								}}
-								onChange={changeTitleText}
-								placeholder="ここに入力"
-							/>
-						</td>
-					</tr>
-					<tr style={{ display: "flex", gap: 20 }}>
-						<th style={{ fontWeight: 400 }}>Link Text:</th>
-						<td style={{ flex: "1 1 auto" }}>
-							<input
-								value={attributes.linkText ?? ""}
-								style={{
-									border: "none",
-									background: "none",
-									width: "100%",
-									fontSize: "1em",
-								}}
-								onChange={changeLinkText}
-								placeholder="ここに入力"
-							/>
-						</td>
-					</tr>
-					<tr style={{ display: "flex", gap: 20 }}>
-						<th style={{ fontWeight: 400 }}>URL:</th>
-						<td style={{ width: "100%" }}>
-							<input
-								style={{
-									border: "none",
-									background: "none",
-									width: "100%",
-									fontSize: "1em",
-								}}
-								value={attributes.linkUrl ?? ""}
-								onChange={changeLinkUrlText}
-								placeholder="ここに入力"
-							/>
-						</td>
-					</tr>
-					<tr style={{ display: "flex", gap: 20 }}>
-						<th style={{ fontWeight: 400 }}>Image:</th>
+						<th
+							style={{
+								fontWeight: 600,
+								maxWidth: "160px",
+								minWidth: "160px",
+								textAlign: "left",
+							}}
+						>
+							Image URL:
+						</th>
 						<td
 							style={{
 								display: "flex",
@@ -164,19 +120,36 @@ export default function edit({ attributes, setAttributes }) {
 								background: "none",
 								fontSize: "1em",
 								alignItems: "center",
-								gap: "1em",
+								gap: "2rem",
 							}}
 						>
-							<ul style={{ margin: 0, padding: 0, listStyle: "none" }}>
-								<li>
+							<ul
+								style={{
+									margin: 0,
+									padding: 0,
+									listStyle: "none",
+									flex: "1 1 auto",
+								}}
+							>
+								<li style={{ width: "100%" }}>
 									<input
-										type="radio"
-										name={`img-type-select-${blockProps.id}`}
-										onChange={() => {
-											changeImgType(ImgType.SELECT);
+										style={{
+											background: "none",
+											fontSize: "1em",
+											width: "100%",
+											boxSizing: "border-box",
 										}}
-										defaultChecked={attributes.imgType == ImgType.SELECT}
+										onChange={inputImageUrl}
+										value={attributes.inputedImageUrl}
+										disabled={!!attributes.selectedImageUrl}
 									/>
+								</li>
+								<li
+									style={{
+										width: "100%",
+										textAlign: "right",
+									}}
+								>
 									<MediaUploadCheck>
 										<MediaUpload
 											onSelect={selectImage}
@@ -184,49 +157,138 @@ export default function edit({ attributes, setAttributes }) {
 											render={({ open }) => (
 												<Button
 													onClick={open}
-													style={{ fontSize: "1em", padding: 0 }}
-													disabled={attributes.imgType != ImgType.SELECT}
+													style={{
+														fontSize: "1em",
+														padding: 0,
+														textDecoration: "underline",
+														fontWeight: 600,
+													}}
+													disabled={!!attributes.inputedImageUrl}
 												>
-													ここをクリックで選択
+													Insert from Media Library
 												</Button>
 											)}
 										/>
 									</MediaUploadCheck>
 								</li>
-								<li>
-									<input
-										type="radio"
-										name={`img-type-select-${blockProps.id}`}
-										onChange={() => {
-											changeImgType(ImgType.URL, inputUrl);
-										}}
-										defaultChecked={attributes.imgType == ImgType.URL}
-									/>
-									<input
-										placeholder="URLを入力"
-										style={{
-											border: "none",
-											background: "none",
-											fontSize: "1em",
-										}}
-										onChange={inputImageUrl}
-										value={inputUrl}
-										disabled={attributes.imgType != ImgType.URL}
-									/>
-								</li>
 							</ul>
+							<div
+								style={{
+									position: "relative",
+									display: "flex",
+									alignItems: "center",
+									justifyContent: "center",
+									minHeight: "100%",
+									height: "100%",
+									maxHeight: "100%",
+									aspectRatio: "1/1",
+									border: "1px solid #000",
+								}}
+							>
+								{attributes.imgUrl && (
+									<img
+										style={{
+											maxHeight: "100%",
+											maxWidth: "59px",
+											height: "auto",
+											width: "auto",
+										}}
+										src={attributes.imgUrl}
+										alt=""
+										onError={(e) => {
+											(e.target as HTMLImageElement).alt = "画像が存在しません";
+											(e.target as HTMLImageElement).onerror = null;
+										}}
+									/>
+								)}
+								<button
+									style={{
+										position: "absolute",
+										display: !!attributes.selectedImageUrl ? "flex" : "none",
+										justifyContent: "center",
+										alignItems: "center",
+										left: "calc(100% - 0.5em)",
+										bottom: "calc(100% - 0.5em)",
+										borderRadius: "50%",
+										fontSize: "1.5rem",
+										height: "1em",
+										width: "1em",
+										backgroundColor: "#000",
+										color: "white",
+									}}
+									onClick={resetSelectedImage}
+								>
+									×
+								</button>
+							</div>
 						</td>
 					</tr>
-					<tr>
-						<td>
-							<img
-								style={{ maxHeight: "120px" }}
-								src={attributes.imgUrl}
-								alt=""
-								onError={(e) => {
-									(e.target as HTMLImageElement).alt = "画像が存在しません";
-									(e.target as HTMLImageElement).onerror = null;
+					<tr style={{ display: "flex", gap: 20 }}>
+						<th
+							style={{
+								fontWeight: 600,
+								maxWidth: "160px",
+								minWidth: "160px",
+								textAlign: "left",
+							}}
+						>
+							Title:
+						</th>
+						<td style={{ width: "100%" }}>
+							<input
+								value={attributes.title ?? ""}
+								style={{
+									background: "none",
+									width: "100%",
+									fontSize: "1em",
 								}}
+								onChange={changeTitleText}
+							/>
+						</td>
+					</tr>
+					<tr style={{ display: "flex", gap: 20 }}>
+						<th
+							style={{
+								fontWeight: 600,
+								maxWidth: "160px",
+								minWidth: "160px",
+								textAlign: "left",
+							}}
+						>
+							Button Text:
+						</th>
+						<td style={{ flex: "1 1 auto" }}>
+							<input
+								value={attributes.linkText ?? ""}
+								style={{
+									background: "none",
+									width: "100%",
+									fontSize: "1em",
+								}}
+								onChange={changeLinkText}
+							/>
+						</td>
+					</tr>
+					<tr style={{ display: "flex", gap: 20 }}>
+						<th
+							style={{
+								fontWeight: 600,
+								maxWidth: "160px",
+								minWidth: "160px",
+								textAlign: "left",
+							}}
+						>
+							URL:
+						</th>
+						<td style={{ width: "100%" }}>
+							<input
+								style={{
+									background: "none",
+									width: "100%",
+									fontSize: "1em",
+								}}
+								value={attributes.linkUrl ?? ""}
+								onChange={changeLinkUrlText}
 							/>
 						</td>
 					</tr>

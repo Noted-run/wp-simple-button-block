@@ -29,6 +29,14 @@ registerBlockType(metadata.name, {
 			type: "string",
 			default: null,
 		},
+		inputedImageUrl: {
+			type: "string",
+			default: "",
+		},
+		selectedImageUrl: {
+			type: "string",
+			default: "",
+		},
 		imgType: {
 			type: "string",
 			default: ImgType.SELECT,
